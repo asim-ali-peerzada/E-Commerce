@@ -29,3 +29,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        const countryCode = document.getElementById('country-code').value;
+        const phoneNumber = document.getElementById('phone').value;
+        
+        // Check if country code is selected and phone number is entered
+        if (!countryCode || !phoneNumber) {
+            event.preventDefault(); // Prevent form submission
+            alert('Please select a country code and enter your phone number.');
+            return false;
+        }
+        
+        // Optionally, you can validate the phone number format here before submission
+        
+        return true; // Allow form submission
+    });
+});

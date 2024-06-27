@@ -59,6 +59,14 @@ class Checkout(models.Model):
 
     def __str__(self):
         return f"Order for {self.user.username} on {self.order_date}"
+    
+class Checkout_Sms(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    contact_number = models.CharField(max_length=15)
+    # Add other fields related to the checkout process
+
+    def __str__(self):
+        return f"Checkout {self.id} by {self.user.username}"
 
 
 

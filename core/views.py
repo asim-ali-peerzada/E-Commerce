@@ -1,15 +1,12 @@
-from django.shortcuts import render,redirect,get_object_or_404
-from .models import HomePageImage
-from .models import Product,CartItem,Checkout
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import HomePageImage, Product, CartItem, Checkout
 from django.contrib.auth.decorators import login_required
-from .forms import CartItemForm
+from .forms import CartItemForm, CheckoutForm, RegisterForm, LoginForm, ContactForm, Checkout_Sms
 from django.contrib import messages
-from .forms import CheckoutForm
-from .forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
-from .forms import ContactForm
 from django.core.mail import send_mail
+from twilio.rest import Client
+from django.conf import settings
 
 # Create your views here.
 
@@ -61,31 +58,7 @@ def cart(request):
         'delivery_fee': delivery_fee,
         'cart_total': cart_total,
     })
-
-
-def checkout(request):
-    cart_items = CartItem.objects.filter(user=request.user).first() 
-    print(f"Cart item: {cart_items}")# Example query to get the first item in the cart
-    if request.method == 'POST':
-        form = CheckoutForm(request.POST)
-        if form.is_valid():
-            # Save checkout details
-            checkout_info = form.save(commit=False)
-            checkout_info.user = request.user
-            checkout_info.save()
-
-            # Clear cart items after checkout
-            cart_items.delete()
-
-            return redirect('checkout_success')  # Redirect to a success page
-    else:
-        form = CheckoutForm()
-
-    return render(request, 'checkout.html', {
-        'form': form,
-        'cart_items': cart_items,
-    })
-
+    
 def checkout_success(request):
     return render(request,'checkout_success.html')
 
@@ -149,3 +122,36 @@ def contact_view(request):
     else:
         form = ContactForm()
     return render(request, 'contact_us.html', {'form': form})
+
+
+def send_order_confirmation_sms(user_phone, order_id):
+    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+    message = f'Thank you for your order! Your order has been placed.Thankyou for shopping.Your Order id is {order_id}.'
+    client.messages.create(
+        body=message,
+        from_=settings.TWILIO_PHONE_NUMBER,
+        to=user_phone
+    )
+
+@login_required
+def checkout(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            checkout_info = form.save(commit=False)
+            checkout_info.user = request.user
+            checkout_info.save()
+
+            # Assuming phone_number is a field in the Checkout model
+            send_order_confirmation_sms(checkout_info.contact_number, checkout_info.id)
+
+            messages.success(request, 'Your order has been placed successfully!')
+            return redirect('checkout_success')
+    else:
+        form = CheckoutForm()
+
+    return render(request, 'checkout.html', {
+        'form': form,
+        'cart_items': cart_items,
+    })
