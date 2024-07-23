@@ -253,24 +253,51 @@
         }
         
         .alert {
-            animation: slide-down 0.5s ease-out, fade-out 0.5s ease 2.5s forwards;
-            opacity: 1;
+            .alert {
+                transition: opacity 1s ease-out;
+            }
         }
+        #message-container {
+            position: relative;
+        }
+        
+        .alert {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+        
+        .alert .piece {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: inherit;
+            /* Additional styling for pieces */
+        }
+        
+        .alert.breakdown .piece {
+            animation: tearEffect 3s forwards;
+        }
+        
+        
+        
 
     </style>
   </head>
   <body>
       {% include "header.html" %}
       
-      <div class="message-container">
-          {% if messages %}
-              {% for message in messages %}
-                  <div class="alert alert-{{ message.tags }}">
-                      {{ message }}
-                  </div>
-              {% endfor %}
-          {% endif %}
+      {% if messages %}
+      <div id="message-container">
+          {% for message in messages %}
+              <div class="alert alert-success" id="message-{{ forloop.counter }}" role="alert">
+                  {{ message }}
+              </div>
+          {% endfor %}
       </div>
+  {% endif %}
+  
   
       <!--Carousel image-->
       <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -356,8 +383,70 @@
   
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <script src="{% static 'js/script.js' %}"></script>
+      <script? src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Size selection functionality
+    var sizeBoxes = document.querySelectorAll('.size-box');
+    var sizeInput = document.getElementById('size-input');
+
+    sizeBoxes.forEach(function(box) {
+        box.addEventListener('click', function() {
+            sizeBoxes.forEach(function(innerBox) {
+                innerBox.classList.remove('selected');
+            });
+            box.classList.add('selected');
+            sizeInput.value = box.getAttribute('data-value');
+            console.log("Selected size:", sizeInput.value); 
+        });
+    });
+
+    // Add to cart form submission
+    var addToCartForm = document.getElementById('add-to-cart-form');
+    if (addToCartForm) {
+        addToCartForm.addEventListener('submit', function(event) {
+            if (!sizeInput.value) {
+                console.log("Size not selected. Form submission prevented."); 
+                event.preventDefault();  // Prevent form submission
+            } else {
+                console.log("Submitting form with size:", sizeInput.value); 
+            }
+        });
+    }
+
+    // Additional form validation
+    var forms = document.querySelectorAll('form');
+    forms.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            const countryCode = document.getElementById('country-code') ? document.getElementById('country-code').value : null;
+            const phoneNumber = document.getElementById('phone') ? document.getElementById('phone').value : null;
+
+            if (form.id !== 'add-to-cart-form' && (!countryCode || !phoneNumber)) {
+                event.preventDefault(); 
+                alert('Please select a country code and enter your phone number.');
+                return false;
+            }
+            
+            return true; 
+        });
+    });
+
+    // Automatically remove messages after a certain time with breakdown effect
+    var messageDuration = 5000; // 5 seconds
+
+    var messages = document.querySelectorAll('#message-container .alert');
+    messages.forEach(function(message) {
+        setTimeout(function() {
+            message.classList.add('breakdown'); // Add class to trigger animation
+            setTimeout(function() {
+                message.remove(); // Remove the message from the DOM after animation
+            }, 3000); // Match this duration with the animation duration
+        }, messageDuration);
+    });
+});
+
+</script>
+    
   </body>
   </html>
   

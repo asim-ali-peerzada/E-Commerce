@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Remove this line to prevent the alert popup
-    // console.log("JavaScript is loaded and running.");
-
+    // Size selection functionality
     var sizeBoxes = document.querySelectorAll('.size-box');
     var sizeInput = document.getElementById('size-input');
 
@@ -12,40 +10,32 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             box.classList.add('selected');
             sizeInput.value = box.getAttribute('data-value');
-            console.log("Selected size:", sizeInput.value);  // Debug print
+            console.log("Selected size:", sizeInput.value); 
         });
     });
 
-    // Ensure the form submission logic
+    // Add to cart form submission
     document.getElementById('add-to-cart-form').addEventListener('submit', function(event) {
         if (!sizeInput.value) {
-            // Remove or comment out the alert message
-            // alert("Please select a size before adding to cart.");
-            console.log("Size not selected. Form submission prevented.");  // Debug print
+            console.log("Size not selected. Form submission prevented."); 
             event.preventDefault();  // Prevent form submission
         } else {
-            console.log("Submitting form with size:", sizeInput.value);  // Debug print
+            console.log("Submitting form with size:", sizeInput.value); 
         }
     });
 
-});
-
-
-document.addEventListener('DOMContentLoaded', function() {
+    // Additional form validation
     const form = document.querySelector('form');
     form.addEventListener('submit', function(event) {
         const countryCode = document.getElementById('country-code').value;
         const phoneNumber = document.getElementById('phone').value;
-        
-        // Check if country code is selected and phone number is entered
+
         if (!countryCode || !phoneNumber) {
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault(); 
             alert('Please select a country code and enter your phone number.');
             return false;
         }
         
-        // Optionally, you can validate the phone number format here before submission
-        
-        return true; // Allow form submission
+        return true; 
     });
 });

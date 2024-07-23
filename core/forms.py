@@ -3,7 +3,7 @@ from django import forms
 from .models import CartItem,Checkout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Checkout_Sms
+
 
 class CartItemForm(forms.ModelForm):
     SIZE_CHOICES = [
@@ -29,6 +29,15 @@ class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Checkout
         fields = ['name', 'address', 'contact_number', 'payment_method']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'contact_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'starts with country code! eg(+00)'
+            }),
+            'payment_method': forms.Select(attrs={'class': 'form-control'}),
+        }
         
 
 class RegisterForm(UserCreationForm):
@@ -56,6 +65,10 @@ class ContactForm(forms.Form):
     email = forms.EmailField()
     message = forms.CharField(widget=forms.Textarea)
     
+    
+
+
+
     
 
 

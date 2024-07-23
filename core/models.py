@@ -25,6 +25,34 @@ class Product(models.Model):
         return self.name
 
 
+class TrackingOrder(models.Model):
+    STATUS_CHOICES = [
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, through='TrackingOrderItem', related_name='tracking_orders')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='processing')
+    tracking_number = models.CharField(max_length=50, blank=True, null=True)
+    tracking_url = models.URLField(blank=True, null=True)
+    order_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Tracking Order #{self.id} by {self.user.username}"
+    
+    
+class TrackingOrderItem(models.Model):
+    order = models.ForeignKey(TrackingOrder, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity}"
+
+
 #Tables for selection of size and quantity
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -60,13 +88,10 @@ class Checkout(models.Model):
     def __str__(self):
         return f"Order for {self.user.username} on {self.order_date}"
     
-class Checkout_Sms(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    contact_number = models.CharField(max_length=15)
-    # Add other fields related to the checkout process
 
-    def __str__(self):
-        return f"Checkout {self.id} by {self.user.username}"
+    
+    
+
 
 
 

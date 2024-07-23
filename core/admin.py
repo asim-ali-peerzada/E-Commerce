@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Product,CartItem,Checkout
+from .models import Product,CartItem,Checkout,TrackingOrder,TrackingOrderItem
 from .models import HomePageImage
-from .models import Checkout_Sms
+
 
 admin.site.register(HomePageImage)
 
@@ -26,4 +26,9 @@ class CheckoutAdmin(admin.ModelAdmin):
     search_fields = ['user__username', 'name', 'contact_number', 'address']
     
 
-admin.site.register(Checkout_Sms)
+
+
+admin.site.register(TrackingOrder)
+admin.site.register(TrackingOrderItem)
+
+
