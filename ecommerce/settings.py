@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+efm@4t^2mc&uq)nl_hfx!yzkpkj5g1^@fz%ov-^zu__z5!!rh'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -130,30 +133,26 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#Update core/settings.py
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# settings.py
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'asimalipeerzada@gmail.com'
-EMAIL_HOST_PASSWORD = 'ugus ubor bcka njej'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
 
-TWILIO_ACCOUNT_SID = 'ACc4e77bf6f40fef03af9163a0d5427258'
-TWILIO_AUTH_TOKEN = '863f05d6961a51c334a9b9593440bbe4'
-TWILIO_PHONE_NUMBER = '+12516551159'
-
-
-
-STRIPE_SECRET_KEY = 'sk_test_51PfdygBTaJCXx3MmjQAbygLN8zQOFcva5nP3ovjDvkIIgLZiBWBYfY58DpNVlqshTjnqqZgoI3ADQ4LcQQqhG2cQ00nX82CRVO'
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51PfdygBTaJCXx3MmJryxIB37sEPZWVgzaYHJOvDmE0akqxiTHDPHWuj4JqPRBixVhUIph5UP7hwRr8we4XdCI5IF00cYbJIbfq'
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
 
 
 
